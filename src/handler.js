@@ -10,22 +10,6 @@ const addBook = (request, h) => {
   const insertedAt = new Date().toISOString();
   const updatedAt = insertedAt;
   const finished = Boolean(pageCount === readPage);
-  const newBook = {
-    id,
-    name,
-    year,
-    author,
-    summary,
-    publisher,
-    pageCount,
-    readPage,
-    finished,
-    reading,
-    insertedAt,
-    updatedAt,
-  };
-  books.push(newBook);
-  const isSuccess = books.filter((b) => b.id === id).length > 0;
   if (request.payload.name === undefined) {
     const response = h.response({
       status: 'fail',
@@ -42,6 +26,22 @@ const addBook = (request, h) => {
     response.code(400);
     return response;
   }
+  const newBook = {
+    id,
+    name,
+    year,
+    author,
+    summary,
+    publisher,
+    pageCount,
+    readPage,
+    finished,
+    reading,
+    insertedAt,
+    updatedAt,
+  };
+  books.push(newBook);
+  const isSuccess = books.filter((b) => b.id === id).length > 0;
   if (isSuccess) {
     const response = h.response({
       status: 'success',
@@ -67,6 +67,16 @@ const getAllBooks = (request, h) => {
   const NotReading = books.filter((nr) => nr.reading === false);
   const Finish = books.filter((f) => f.finished === true);
   const NotFinish = books.filter((nf) => nf.finished === false);
+  if (request.query.name !== null) {
+    const response = h.response({
+      status: 'success',
+      data: {
+        books: Bookname.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
+      },
+    });
+    response.code(200);
+    return response;
+  }
   if (Number(request.query.finished) === 1) {
     const response = h.response({
       status: 'success',
@@ -102,16 +112,6 @@ const getAllBooks = (request, h) => {
       status: 'success',
       data: {
         books: NotReading.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
-      },
-    });
-    response.code(200);
-    return response;
-  }
-  if (request.query.name !== undefined) {
-    const response = h.response({
-      status: 'success',
-      data: {
-        books: Bookname.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
       },
     });
     response.code(200);
