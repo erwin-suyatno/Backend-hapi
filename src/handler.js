@@ -62,12 +62,12 @@ const addBook = (request, h) => {
 };
 const getAllBooks = (request, h) => {
   const getBook = books.map((b) => ({ id: b.id, name: b.name, publisher: b.publisher }));
-  const Bookname = books.filter((n) => n.name.toLowerCase() === String(request.query.name).toLowerCase());
+  const Bookname = books.filter((n) => (n.name.toLowerCase()).includes(String(request.query.name).toLowerCase()));
   const Reading = books.filter((r) => r.reading === true);
   const NotReading = books.filter((nr) => nr.reading === false);
   const Finish = books.filter((f) => f.finished === true);
   const NotFinish = books.filter((nf) => nf.finished === false);
-  if (request.query.name !== null) {
+  if (request.query.name !== undefined) {
     const response = h.response({
       status: 'success',
       data: {
@@ -117,7 +117,7 @@ const getAllBooks = (request, h) => {
     response.code(200);
     return response;
   }
-  if (getBook !== undefined) {
+  if (getBook[0] !== undefined) {
     const response = h.response({
       status: 'success',
       message: 'Buku berhasil ditambahkan',
@@ -130,9 +130,8 @@ const getAllBooks = (request, h) => {
   }
   return {
     status: 'success',
-    message: 'Buku berhasil ditambahkan',
     data: {
-      books,
+      books: [{ id: '', name: '', publisher: '' }],
     },
   };
 };
@@ -143,7 +142,7 @@ const getDetailBook = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        books: getDetail,
+        book: getDetail,
       },
     });
     response.code(200);
