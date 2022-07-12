@@ -131,7 +131,7 @@ const getAllBooks = (request, h) => {
   return {
     status: 'success',
     data: {
-      books: [{ id: '', name: '', publisher: '' }],
+      books: [],
     },
   };
 };
