@@ -10,7 +10,9 @@ const addBook = (request, h) => {
   const insertedAt = new Date().toISOString();
   const updatedAt = insertedAt;
   const finished = Boolean(pageCount === readPage);
-  if (request.payload.name === undefined) {
+  const requestPayloadName = request.payload.name;
+
+  if (requestPayloadName === undefined) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal menambahkan buku. Mohon isi nama buku',
@@ -26,6 +28,7 @@ const addBook = (request, h) => {
     response.code(400);
     return response;
   }
+
   const newBook = {
     id,
     name,
@@ -41,6 +44,7 @@ const addBook = (request, h) => {
     updatedAt,
   };
   books.push(newBook);
+
   const isSuccess = books.filter((b) => b.id === id).length > 0;
   if (isSuccess) {
     const response = h.response({
@@ -62,16 +66,16 @@ const addBook = (request, h) => {
 };
 const getAllBooks = (request, h) => {
   const getBook = books.map((b) => ({ id: b.id, name: b.name, publisher: b.publisher }));
-  const Bookname = books.filter((n) => (n.name.toLowerCase()).includes(String(request.query.name).toLowerCase()));
-  const Reading = books.filter((r) => r.reading === true);
-  const NotReading = books.filter((nr) => nr.reading === false);
-  const Finish = books.filter((f) => f.finished === true);
-  const NotFinish = books.filter((nf) => nf.finished === false);
+  const bookName = books.filter((n) => (n.name.toLowerCase()).includes(String(request.query.name).toLowerCase()));
+  const readBook = books.filter((r) => r.reading === true);
+  const notReading = books.filter((nr) => nr.reading === false);
+  const finishBook = books.filter((f) => f.finished === true);
+  const notFinishBook = books.filter((nf) => nf.finished === false);
   if (request.query.name !== undefined) {
     const response = h.response({
       status: 'success',
       data: {
-        books: Bookname.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
+        books: bookName.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
       },
     });
     response.code(200);
@@ -81,7 +85,7 @@ const getAllBooks = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        books: Finish.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
+        books: finishBook.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
       },
     });
     response.code(200);
@@ -91,7 +95,7 @@ const getAllBooks = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        books: NotFinish.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
+        books: notFinishBook.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
       },
     });
     response.code(200);
@@ -101,7 +105,7 @@ const getAllBooks = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        books: Reading.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
+        books: readBook.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
       },
     });
     response.code(200);
@@ -111,7 +115,7 @@ const getAllBooks = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        books: NotReading.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
+        books: notReading.map((b) => (({ id: b.id, name: b.name, publisher: b.publisher }))),
       },
     });
     response.code(200);
